@@ -11,9 +11,7 @@ export class UserController {
   async find(@Query() pagination: PaginationDto) {
     const { pageNum, pageSize = 10 } = pagination
 
-    const offset = pageSize * (pageNum - 1)
-
-    const results = await this.userService.find(offset, pageSize)
+    const results = await this.userService.find(pageNum, pageSize)
 
     return results
   }
