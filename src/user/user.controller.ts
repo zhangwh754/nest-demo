@@ -1,11 +1,15 @@
-import { Controller, Get, Query, Param } from '@nestjs/common'
+import { Controller, Get, Query, Param, Inject, Post } from '@nestjs/common'
 
 import { UserService } from './user.service'
 import { PaginationDto } from 'src/app/common/dto'
+import { GlobalModuleModule } from 'src/global-module/global-module.module'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    @Inject('AAA') private readonly globalModuleModule: GlobalModuleModule
+  ) {}
 
   @Get()
   async find(@Query() pagination: PaginationDto) {
@@ -20,5 +24,10 @@ export class UserController {
   findOne(@Param('id') id: number) {
     console.log(typeof id === 'number') // true
     return 'This action returns a user'
+  }
+
+  @Post('globalModule')
+  getGlobalModule() {
+    return this.globalModuleModule
   }
 }
