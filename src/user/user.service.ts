@@ -32,10 +32,14 @@ export class UserService {
 
     const values = [createUserDto.nickname, createUserDto.password, createUserDto.sex, createUserDto.age]
 
-    // 执行插入操作
-    const [rows] = await conn.execute(sql, values)
+    try {
+      // 执行插入操作
+      await conn.execute(sql, values)
 
-    return this.find(1, 10)
+      return this.find(1, 10)
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
   }
 
   /**
@@ -46,9 +50,13 @@ export class UserService {
       SELECT id, nickname, sex, age FROM users WHERE nickname = ?
     `
 
-    const [rows] = await conn.execute(sql, [nickname])
+    try {
+      const [rows] = await conn.execute(sql, [nickname])
 
-    return rows
+      return rows
+    } catch (error) {
+      throw new HttpException('该昵称已存在', HttpStatus.BAD_REQUEST)
+    }
   }
 
   /**
@@ -65,19 +73,27 @@ export class UserService {
       ORDER BY id DESC
       LIMIT ? OFFSET ?
     `
+    try {
+      const [rows] = await conn.execute(sql, args)
 
-    const [rows] = await conn.execute(sql, args)
-
-    return rows
+      return rows
+    } catch (error) {
+      throw new HttpException('该昵称已存在', HttpStatus.BAD_REQUEST)
+    }
   }
 
   /**
    * @description: 用户总数查询
    */
   private async getUsersTotalCount() {
-    const [result] = await conn.execute('SELECT COUNT(*) as totalCount FROM users')
-    const totalCount = result[0].totalCount
+    try {
+      const [result] = await conn.execute('SELECT COUNT(*) as totalCount FROM users')
 
-    return totalCount
+      const totalCount = result[0].totalCount
+
+      return totalCount
+    } catch (error) {
+      throw new HttpException('该昵称已存在', HttpStatus.BAD_REQUEST)
+    }
   }
 }
