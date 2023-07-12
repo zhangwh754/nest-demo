@@ -1,8 +1,9 @@
-import { Controller, Get, Query, Param, Inject, Post } from '@nestjs/common'
+import { Controller, Get, Query, Param, Inject, Post, Body } from '@nestjs/common'
 
 import { UserService } from './user.service'
 import { PaginationDto } from 'src/app/common/dto'
 import { GlobalModuleModule } from 'src/global-module/global-module.module'
+import { CreateUserDto } from './dto/create-user.dto'
 
 @Controller('user')
 export class UserController {
@@ -24,6 +25,11 @@ export class UserController {
   findOne(@Param('id') id: number) {
     console.log(typeof id === 'number') // true
     return 'This action returns a user'
+  }
+
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto)
   }
 
   @Post('globalModule')
