@@ -22,9 +22,8 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    console.log(typeof id === 'number') // true
-    return 'This action returns a user'
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(id)
   }
 
   @Post()

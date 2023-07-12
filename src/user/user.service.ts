@@ -43,9 +43,26 @@ export class UserService {
   }
 
   /**
+   * @description: 根据id查询用户
+   */
+  async findOne(id: string) {
+    const sql = `
+      SELECT id, nickname, sex, age FROM users WHERE id = ?
+    `
+
+    try {
+      const [rows] = await conn.execute(sql, [id])
+
+      return rows[0]
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  /**
    * @description: 根据昵称查询用户
    */
-  async findUserByNickName(nickname: string) {
+  private async findUserByNickName(nickname: string) {
     const sql = `
       SELECT id, nickname, sex, age FROM users WHERE nickname = ?
     `
@@ -55,7 +72,7 @@ export class UserService {
 
       return rows
     } catch (error) {
-      throw new HttpException('该昵称已存在', HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
   }
 
@@ -78,7 +95,7 @@ export class UserService {
 
       return rows
     } catch (error) {
-      throw new HttpException('该昵称已存在', HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
   }
 
@@ -93,7 +110,7 @@ export class UserService {
 
       return totalCount
     } catch (error) {
-      throw new HttpException('该昵称已存在', HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
   }
 }
