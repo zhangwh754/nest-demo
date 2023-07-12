@@ -1,7 +1,7 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get, Query, Param } from '@nestjs/common'
 
 import { UserService } from './user.service'
-import { PaginationDto } from 'src/common/dto'
+import { PaginationDto } from 'src/app/common/dto'
 
 @Controller('user')
 export class UserController {
@@ -14,5 +14,11 @@ export class UserController {
     const results = await this.userService.find(pageNum, pageSize)
 
     return results
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    console.log(typeof id === 'number') // true
+    return 'This action returns a user'
   }
 }
