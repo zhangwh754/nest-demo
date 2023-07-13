@@ -54,8 +54,6 @@ export class FileController {
 
       fileStream.pipe(response)
     } catch (error) {
-      console.log(error)
-
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
   }

@@ -8,6 +8,7 @@ import * as cors from 'cors'
 import { AppModule } from './app.module'
 import './app/database'
 import { validationPipeConfig } from './app/config'
+import { ResponseInterceptor } from './app/interceptor'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -18,6 +19,8 @@ async function bootstrap() {
   app.useStaticAssets(resolve(__dirname, '../public/static'), { prefix: '/demo' })
 
   app.useGlobalPipes(new ValidationPipe(validationPipeConfig))
+
+  app.useGlobalInterceptors(new ResponseInterceptor())
 
   await app.listen(process.env.PORT)
 }
