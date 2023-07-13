@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文件下载demo</title>
+</head>
+
+<body>
+  <h2>文件模块</h2>
+
+  <input type="text" value="1.txt,hello.txt,2.txt">
+
+  <button id="btn">下载压缩包</button>
+
+  <script>
+    const useFetch = async (url) => {
+      try {
+        const res = await fetch(url).then(async res => {
+          if (res.status != 200) {
+            const result = await res.json()
+            throw result.message
+          }
+          else return res.arrayBuffer()
+        })
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(new Blob([res]))
+        a.download = 'files.zip'
+        a.click()
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const download = () => {
+      const filenames = document.querySelector('input').value
+
+      useFetch(`http://localhost:1337/file/export/${filenames}`)
+    }
+
+    document.querySelector('#btn').addEventListener('click', download)
+  </script>
+</body>
+
+</html>

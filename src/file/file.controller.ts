@@ -1,6 +1,18 @@
-import { resolve } from 'path'
+import { resolve, basename } from 'path'
+import { existsSync } from 'fs'
 
-import { Controller, Get, Param, Post, Res, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common'
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 import type { Response } from 'express'
 import { zip } from 'compressing'
@@ -23,18 +35,28 @@ export class FileController {
 
   @Get('export/:filenames')
   async download(@Param('filenames') filenames: string, @Res() response: Response) {
-    const filenameArr = filenames.split(',').map(filename => resolve(__dirname, `../../public/resource/${filename}`))
+    try {
+      const filenameArr = filenames.split(',').map(filename => resolve(__dirname, `../../public/resource/${filename}`))
 
-    const fileStream = new zip.Stream()
+      const fileStream = new zip.Stream()
 
-    filenameArr.forEach(filename => {
-      fileStream.addEntry(filename)
-    })
+      filenameArr.forEach(filename => {
+        if (existsSync(filename)) {
+          fileStream.addEntry(filename)
+        } else {
+          throw `文件[${basename(filename)}]不存在`
+        }
+      })
 
-    response.setHeader('Content-Type', 'application/octet-stream')
+      response.setHeader('Content-Type', 'application/octet-stream')
 
-    response.setHeader('Content-Disposition', `attachment; filename=${new Date().getTime()}.zip`)
+      response.setHeader('Content-Disposition', `attachment; filename=${new Date().getTime()}.zip`)
 
-    fileStream.pipe(response)
+      fileStream.pipe(response)
+    } catch (error) {
+      console.log(error)
+
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
   }
 }

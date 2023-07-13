@@ -14,8 +14,8 @@ async function bootstrap() {
 
   app.use(cors())
 
-  // app.useStaticAssets(resolve(__dirname, '../public/resource'))
   app.useStaticAssets(resolve(__dirname, '../public/resource'), { prefix: '/file' })
+  app.useStaticAssets(resolve(__dirname, '../public/static'), { prefix: '/demo' })
 
   app.useGlobalPipes(new ValidationPipe(validationPipeConfig))
 
