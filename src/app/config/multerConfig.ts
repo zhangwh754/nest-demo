@@ -1,8 +1,8 @@
 import { extname, resolve } from 'path'
 
-import { diskStorage, MulterOptions } from 'multer'
+import { diskStorage } from 'multer'
 
-export const multerConfig: MulterOptions = {
+export const multerConfig = {
   storage: diskStorage({
     destination: resolve(__dirname, '../../../public/resource'),
     filename: (_, file, callback) => {
