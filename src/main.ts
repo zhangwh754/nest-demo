@@ -9,6 +9,7 @@ import { AppModule } from './app.module'
 import './app/database'
 import { validationPipeConfig } from './app/config'
 import { ResponseInterceptor } from './app/interceptor'
+import { ExceptionInterceptor } from './app/filter'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -21,6 +22,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe(validationPipeConfig))
 
   app.useGlobalInterceptors(new ResponseInterceptor())
+  app.useGlobalFilters(new ExceptionInterceptor())
 
   await app.listen(process.env.PORT)
 }
