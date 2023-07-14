@@ -11,7 +11,7 @@ export class ExceptionInterceptor implements ExceptionFilter {
 
     response.status(status).json({
       statusCode: status,
-      message: exception.message,
+      message: (exception as any).response.message || exception.message,
       timestamp: new Date().toISOString(),
       path: request.url,
       method: request.method,
