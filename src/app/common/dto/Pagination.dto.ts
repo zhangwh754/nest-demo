@@ -1,10 +1,12 @@
 import { IsOptional, IsNumber } from 'class-validator'
 
+const numberConfig = { message: '$property是数字' }
+
 export class PaginationDto {
-  @IsNumber()
+  @IsNumber({}, numberConfig)
   pageNum: number
 
   @IsOptional()
-  @IsNumber()
+  @IsNumber({}, numberConfig)
   pageSize?: number
 }
