@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module'
 import { UserModule } from './user/user.module'
 import { GlobalModuleModule } from './global-module/global-module.module'
 import { FileModule } from './file/file.module'
+import { AuthGuard } from './app/guard'
 
 @Module({
   imports: [
@@ -15,6 +16,11 @@ import { FileModule } from './file/file.module'
     FileModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

@@ -4,6 +4,8 @@ import { UserService } from './user.service'
 import { PaginationDto } from 'src/app/common/dto'
 import { GlobalModuleModule } from 'src/global-module/global-module.module'
 import { CreateUserDto } from './dto/create-user.dto'
+import { Auth } from 'src/app/decorator'
+import { Role } from 'src/app/enum'
 
 @Controller('user')
 export class UserController {
@@ -27,6 +29,7 @@ export class UserController {
   }
 
   @Post()
+  @Auth(Role.Admin)
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto)
   }
