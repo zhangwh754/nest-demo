@@ -3,7 +3,7 @@ import { Controller, Get, Query, Param, Inject, Post, Body } from '@nestjs/commo
 import { UserService } from './user.service'
 import { PaginationDto } from 'src/app/common/dto'
 import { GlobalModuleModule } from 'src/global-module/global-module.module'
-import { CreateUserDto } from './dto/create-user.dto'
+import { CreateUserDto, SignInDto } from './dto'
 import { Auth } from 'src/app/decorator'
 import { Role } from 'src/app/enum'
 
@@ -13,6 +13,11 @@ export class UserController {
     private readonly userService: UserService,
     @Inject('AAA') private readonly globalModuleModule: GlobalModuleModule
   ) {}
+
+  @Post('/signIn')
+  async signIn(@Body() signInDto: SignInDto) {
+    return signInDto
+  }
 
   @Get()
   async find(@Query() pagination: PaginationDto) {

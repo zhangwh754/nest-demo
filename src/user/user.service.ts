@@ -62,9 +62,9 @@ export class UserService {
   /**
    * @description: 根据昵称查询用户
    */
-  private async findUserByNickName(nickname: string) {
+  async findUserByNickName(nickname: string) {
     const sql = `
-      SELECT id, nickname, sex, age FROM users WHERE nickname = ?
+      SELECT * FROM users WHERE nickname = ?
     `
 
     try {
