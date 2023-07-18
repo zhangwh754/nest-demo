@@ -36,7 +36,7 @@ export class FileController {
   @Get('export/:filenames')
   async download(@Param('filenames') filenames: string, @Res() response: Response) {
     try {
-      const filenameArr = filenames.split(',').map(filename => resolve(__dirname, `../../public/resource/${filename}`))
+      const filenameArr = filenames.split(',').map(filename => resolve(process.cwd(), `public/resource/${filename}`))
 
       const fileStream = new zip.Stream()
 
