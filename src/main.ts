@@ -14,7 +14,12 @@ import { ExceptionInterceptor } from './app/filter'
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
-  app.use(cors())
+  app.use(
+    cors({
+      origin: (origin, callback) => callback(null, true),
+      credentials: true, // 允许发送 cookie
+    })
+  )
 
   app.useStaticAssets(resolve(process.cwd(), 'public/resource'), { prefix: '/file' })
   app.useStaticAssets(resolve(process.cwd(), 'public/static'), { prefix: '/demo' })
