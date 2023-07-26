@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module'
 import { GlobalModuleModule } from './global-module/global-module.module'
 import { FileModule } from './file/file.module'
 import { AuthGuard } from './app/guard'
+import { EventsModule } from './events/events.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthGuard } from './app/guard'
     UserModule,
     GlobalModuleModule.forRoot({ url: 'concatUrl' }),
     FileModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [
