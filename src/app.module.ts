@@ -8,7 +8,6 @@ import { GlobalModuleModule } from './global-module/global-module.module'
 import { FileModule } from './file/file.module'
 import { AuthGuard } from './app/guard'
 import { EventsModule } from './events/events.module'
-import { AnimalModule } from './animal/animal.module'
 import { TypeOrmConfig } from './app/config/typeorm'
 
 @Module({
@@ -20,7 +19,6 @@ import { TypeOrmConfig } from './app/config/typeorm'
     UserModule,
     FileModule,
     EventsModule,
-    AnimalModule,
   ],
   controllers: [],
   providers: [
