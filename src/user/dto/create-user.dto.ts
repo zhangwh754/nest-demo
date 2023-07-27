@@ -1,6 +1,6 @@
 import { IsNumber, IsString } from 'class-validator'
 
-enum Sex {
+export enum Sex {
   male = 'male',
   female = 'female',
 }

@@ -1,21 +1,26 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 
-import { conn } from '../app/database'
 import { CreateUserDto } from './dto/create-user.dto'
+import { User } from './entities/user.entity'
 
 @Injectable()
 export class UserService {
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>
+  ) {}
+
   async find(pageNum: number, pageSize: number) {
-    const rows = await this.findUsers(pageNum, pageSize)
+    const data = await this.findUsers(pageNum, pageSize)
     const totalCount = await this.getUsersTotalCount()
-    const totalPages = Math.ceil(totalCount / pageSize)
 
     return {
       pageNum: +pageNum,
       pageSize: +pageSize,
-      totalPages: totalPages,
       totalCount: totalCount,
-      data: rows,
+      data: data,
     }
   }
 
@@ -24,19 +29,19 @@ export class UserService {
    */
   async create(createUserDto: CreateUserDto) {
     const _user = await this.findUserByNickName(createUserDto.nickname)
-    if ((_user as any[]).length) {
-      throw new HttpException('该昵称已存在', HttpStatus.BAD_REQUEST)
-    }
+    if (_user) throw new HttpException('该昵称已存在', HttpStatus.BAD_REQUEST)
 
-    const sql = `INSERT INTO users (nickname, password, sex, age) VALUES (?, ?, ?, ?)`
-
-    const values = [createUserDto.nickname, createUserDto.password, createUserDto.sex, createUserDto.age]
+    const user = new User()
+    user.nickname = createUserDto.nickname
+    user.password = createUserDto.password
+    user.sex = createUserDto.sex
+    user.age = createUserDto.age
 
     try {
       // 执行插入操作
-      await conn.execute(sql, values)
+      await this.userRepository.save(user)
 
-      return this.find(1, 10)
+      return await this.find(1, 10)
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
@@ -45,13 +50,13 @@ export class UserService {
   /**
    * @description: 根据id查询用户
    */
-  async findOne(id: string) {
-    const sql = `
-      SELECT id, nickname, sex, age FROM users WHERE id = ?
-    `
-
+  async findOne(id: number) {
     try {
-      const [rows] = await conn.execute(sql, [id])
+      const [rows] = await this.userRepository.find({
+        where: {
+          id: id,
+        },
+      })
 
       return rows[0]
     } catch (error) {
@@ -63,14 +68,16 @@ export class UserService {
    * @description: 根据昵称查询用户
    */
   async findUserByNickName(nickname: string) {
-    const sql = `
-      SELECT * FROM users WHERE nickname = ?
-    `
-
     try {
-      const [rows] = await conn.execute(sql, [nickname])
+      const user = await this.userRepository.findOne({
+        where: {
+          nickname: nickname,
+        },
+      })
 
-      return rows
+      console.log('user', user)
+
+      return user
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
@@ -81,19 +88,17 @@ export class UserService {
    */
   private async findUsers(pageNum: number, pageSize: number) {
     const offset = pageSize * (pageNum - 1)
-    const args = [pageSize, offset].map(String)
 
-    const sql = `
-      SELECT
-      id, nickname, sex, age
-      FROM users
-      ORDER BY id DESC
-      LIMIT ? OFFSET ?
-    `
     try {
-      const [rows] = await conn.execute(sql, args)
+      const data = await this.userRepository.find({
+        order: { id: 'DESC' },
+        skip: offset,
+        take: pageSize,
+      })
 
-      return rows
+      console.log(data)
+
+      return data
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
@@ -104,11 +109,9 @@ export class UserService {
    */
   private async getUsersTotalCount() {
     try {
-      const [result] = await conn.execute('SELECT COUNT(*) as totalCount FROM users')
+      const total = await this.userRepository.count()
 
-      const totalCount = result[0].totalCount
-
-      return totalCount
+      return total
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
