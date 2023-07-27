@@ -44,7 +44,7 @@ export class CategoryService {
    */
   async findOne(id: number) {
     try {
-      const res = await this.CategoryRepository.findOne({ where: { id: id }, relations: ['articles'] })
+      const res = await this.CategoryRepository.findOne({ where: { id: id }, relations: ['articles', 'tags'] })
 
       if (!res) throw `对应分类不存在`
 

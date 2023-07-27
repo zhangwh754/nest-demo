@@ -11,6 +11,7 @@ import { EventsModule } from './events/events.module'
 import { TypeOrmConfig } from './app/config/typeorm'
 import { CategoryModule } from './category/category.module'
 import { ArticleModule } from './article/article.module'
+import { TagModule } from './tag/tag.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ArticleModule } from './article/article.module'
     EventsModule,
     CategoryModule,
     ArticleModule,
+    TagModule,
   ],
   controllers: [],
   providers: [

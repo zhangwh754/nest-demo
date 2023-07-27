@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne, JoinTable } from 'typeorm'
 
 import { Category } from '../../category/entities/category.entity'
+import { Tag } from '../../tag/entities/tag.entity'
 
 @Entity()
 export class Article {
@@ -10,7 +11,10 @@ export class Article {
   @Column({ type: 'varchar', length: 30 })
   title: string
 
-  @ManyToMany(() => Category, Category => Category.articles)
+  @ManyToOne(() => Category, Category => Category.articles)
   @JoinTable()
-  categories: Category[]
+  category: Category
+
+  @ManyToMany(() => Tag, Tag => Tag.articles)
+  tags: Tag[]
 }

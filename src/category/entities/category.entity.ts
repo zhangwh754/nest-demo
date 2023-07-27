@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 
 import { Article } from '../../article/entities/article.entity'
+import { Tag } from 'src/tag/entities/tag.entity'
 
 @Entity()
 export class Category {
@@ -10,6 +11,9 @@ export class Category {
   @Column({ type: 'varchar', length: 20 })
   name: string
 
-  @ManyToMany(() => Article, Article => Article.categories)
+  @OneToMany(() => Article, Article => Article.category)
   articles: Article[]
+
+  @OneToMany(() => Tag, Tag => Tag.category)
+  tags: Tag[]
 }

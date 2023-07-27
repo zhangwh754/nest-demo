@@ -5,9 +5,10 @@ import { CategoryService } from './category.service'
 import { CategoryController } from './category.controller'
 import { Category } from './entities/category.entity'
 import { Article } from '../article/entities/article.entity'
+import { Tag } from '../tag/entities/tag.entity'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Category, Article])],
+  imports: [TypeOrmModule.forFeature([Category, Article, Tag])],
   controllers: [CategoryController],
   providers: [CategoryService],
 })

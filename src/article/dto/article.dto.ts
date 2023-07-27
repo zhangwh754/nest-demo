@@ -6,5 +6,5 @@ export class ArticleDto {
   title: string
 
   @IsArray()
-  categoryIds: number[]
+  tagIds: number[]
 }
