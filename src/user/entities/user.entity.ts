@@ -16,7 +16,7 @@ export class User {
   @Column({ type: 'int' })
   age: number
 
-  @Column({ type: 'varchar', length: 36 })
+  @Column({ type: 'varchar', length: 36, select: false })
   password: string
 
   @Column({ type: 'varchar', default: 'user' })

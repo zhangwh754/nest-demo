@@ -9,6 +9,8 @@ import { FileModule } from './file/file.module'
 import { AuthGuard } from './app/guard'
 import { EventsModule } from './events/events.module'
 import { TypeOrmConfig } from './app/config/typeorm'
+import { CategoryModule } from './category/category.module'
+import { ArticleModule } from './article/article.module'
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { TypeOrmConfig } from './app/config/typeorm'
     UserModule,
     FileModule,
     EventsModule,
+    CategoryModule,
+    ArticleModule,
   ],
   controllers: [],
   providers: [
