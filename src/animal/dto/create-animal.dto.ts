@@ -1,11 +1,11 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator'
+import { IsEnum, IsNumber, IsString, MaxLength, Max, Min } from 'class-validator'
 
-enum Sex {
+export enum Sex {
   male = 'male',
   female = 'female',
 }
 
-enum Breed {
+export enum Breed {
   dog = 'dog',
   cat = 'cat',
   rabbit = 'rabbit',
@@ -13,9 +13,12 @@ enum Breed {
 
 export class CreateAnimalDto {
   @IsString()
+  @MaxLength(20)
   name: string
 
   @IsNumber()
+  @Max(100)
+  @Min(1)
   age: number
 
   @IsEnum(Sex)

@@ -1,5 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
 
+import { Breed, Sex } from '../dto/create-animal.dto'
+
 @Entity()
 export class Animal {
   @PrimaryGeneratedColumn()
@@ -11,10 +13,10 @@ export class Animal {
   @Column({ type: 'int' })
   age: number
 
-  @Column({ type: 'enum', enum: ['male', 'female'] })
+  @Column({ type: 'enum', enum: Sex })
   sex: string
 
-  @Column({ type: 'enum', enum: ['dog', 'cat', 'rabbit'] })
+  @Column({ type: 'enum', enum: Breed })
   breed: string
 
   @CreateDateColumn({ type: 'timestamp' })
