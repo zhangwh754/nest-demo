@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common'
 import { TagService } from './tag.service'
 import { CreateTagDto } from './dto/create-tag.dto'
 import { UpdateTagDto } from './dto/update-tag.dto'
+import { PaginationDto } from 'src/app/common/dto'
 
 @Controller('tag')
 export class TagController {
@@ -13,8 +14,10 @@ export class TagController {
   }
 
   @Get()
-  findAll() {
-    return this.tagService.findAll()
+  findAll(@Query() pagination: PaginationDto) {
+    const { pageNum, pageSize = 10 } = pagination
+
+    return this.tagService.findAll(pageNum, pageSize)
   }
 
   @Get(':id')

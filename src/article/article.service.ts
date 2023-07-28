@@ -19,6 +19,24 @@ export class ArticleService {
     private readonly TagRepository: Repository<Tag>
   ) {}
 
+  /**
+   * @description: 分页接口
+   */
+  async find(pageNum: number, pageSize: number) {
+    const data = await this.findArticles(pageNum, pageSize)
+    const totalCount = await this.getArticlesTotal()
+
+    return {
+      pageNum: +pageNum,
+      pageSize: +pageSize,
+      totalCount: totalCount,
+      data: data,
+    }
+  }
+
+  /**
+   * @description: 创建新文章
+   */
   async create(articleDto: ArticleDto) {
     const tagIds = articleDto.tagIds
     try {
@@ -47,6 +65,36 @@ export class ArticleService {
       if (!res) throw `对应文章不存在`
 
       return res
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  /**
+   * @description: 文章分页
+   */
+  async findArticles(pageNum: number, pageSize: number) {
+    const offset = (pageNum - 1) * pageSize
+
+    try {
+      const res = await this.ArticleRepository.find({
+        order: { id: 'DESC' },
+        skip: offset,
+        take: pageSize,
+        relations: ['tags', 'category'],
+      })
+      return res
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  /**
+   * @description: 文章总数
+   */
+  private async getArticlesTotal() {
+    try {
+      return await this.ArticleRepository.count()
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }

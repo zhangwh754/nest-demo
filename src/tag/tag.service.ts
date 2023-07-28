@@ -37,8 +37,19 @@ export class TagService {
     }
   }
 
-  findAll() {
-    return `This action returns all tag`
+  /**
+   * @description: 分页接口
+   */
+  async findAll(pageNum: number, pageSize: number) {
+    const data = await this.findTags(pageNum, pageSize)
+    const totalCount = await this.getTagsTotal()
+
+    return {
+      pageNum: +pageNum,
+      pageSize: +pageSize,
+      totalCount: totalCount,
+      data: data,
+    }
   }
 
   /**
@@ -56,11 +67,63 @@ export class TagService {
     }
   }
 
-  update(id: number, updateTagDto: UpdateTagDto) {
-    return `This action updates a #${id} tag`
+  /**
+   * @description: 修改标签名称
+   */
+  async update(id: number, updateTagDto: UpdateTagDto) {
+    try {
+      const tag = new Tag()
+      tag.name = updateTagDto.name
+
+      await this.findOne(id)
+
+      await this.TagRepository.update(id, tag)
+      return '修改成功'
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tag`
+  /**
+   * @description: 删除标签
+   */
+  async remove(id: number) {
+    try {
+      await this.findOne(id)
+
+      await this.TagRepository.delete(id)
+      return '删除成功'
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  /**
+   * @description: 标签分页
+   */
+  async findTags(pageNum: number, pageSize: number) {
+    const offset = (pageNum - 1) * pageSize
+
+    try {
+      const res = await this.TagRepository.find({
+        order: { id: 'DESC' },
+        skip: offset,
+        take: pageSize,
+      })
+      return res
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  /**
+   * @description: 获取总数
+   */
+  private async getTagsTotal() {
+    try {
+      return await this.TagRepository.count()
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
   }
 }

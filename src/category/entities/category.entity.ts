@@ -11,7 +11,10 @@ export class Category {
   @Column({ type: 'varchar', length: 20 })
   name: string
 
-  @OneToMany(() => Article, Article => Article.category)
+  @OneToMany(() => Article, Article => Article.category, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   articles: Article[]
 
   @OneToMany(() => Tag, Tag => Tag.category)
