@@ -1,5 +1,5 @@
 import { resolve, basename } from 'path'
-import { existsSync } from 'fs'
+import { existsSync, createReadStream } from 'fs'
 
 import {
   Controller,
@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   HttpException,
   HttpStatus,
+  Body,
 } from '@nestjs/common'
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 import type { Response } from 'express'
@@ -55,6 +56,37 @@ export class FileController {
       fileStream.pipe(response)
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  @Post('stream')
+  async getImageStream(@Body('img') imgName, @Res() res: Response) {
+    console.log(imgName)
+
+    try {
+      // 获取图片文件的绝对路径（假设图片存储在 /path/to/images 目录下）
+      const imagePath = resolve(process.cwd(), `public/resource/${imgName}`)
+
+      // 检查图片是否存在
+      if (existsSync(imagePath)) {
+        // 读取图片文件并发送给客户端
+        const imageStream = createReadStream(imagePath)
+        imageStream.pipe(res)
+        res.status(200)
+      } else {
+        // 如果图片不存在，返回 404 Not Found
+        res.status(404).send({
+          statusCode: 404,
+          message: 'Image not found.',
+          result: 'Image not found.',
+        })
+      }
+    } catch (error) {
+      res.status(500).send({
+        statusCode: 500,
+        message: error,
+        result: error,
+      })
     }
   }
 }
