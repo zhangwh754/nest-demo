@@ -1,4 +1,4 @@
-import { omit } from './jsUtils'
+import { omit, sleep } from './jsUtils'
 import { fileInput } from './nodeUtils'
 
-export { omit, fileInput }
+export { omit, fileInput, sleep }

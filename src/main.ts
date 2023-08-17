@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import * as cors from 'cors'
+import * as bodyParser from 'body-parser'
 
 import { AppModule } from './app.module'
 import './app/database'
@@ -20,6 +21,7 @@ async function bootstrap() {
       credentials: true, // 允许发送 cookie
     })
   )
+  app.use(bodyParser.json({ limit: '50mb' }))
 
   app.useStaticAssets(resolve(process.cwd(), 'public/resource'), { prefix: '/file' })
   app.useStaticAssets(resolve(process.cwd(), 'public/static'), { prefix: '/demo' })
